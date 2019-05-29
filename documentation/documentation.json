@@ -1,0 +1,1380 @@
+{
+    "pipes": [],
+    "interfaces": [
+        {
+            "name": "SkyDocsCodeExample",
+            "id": "interface-SkyDocsCodeExample-ac24a57aa1087dd42bc78912a5b2462d",
+            "file": "src/app/public/modules/code-examples/code-example.ts",
+            "type": "interface",
+            "sourceCode": "import {\n  SkyDocsSourceCodeFile\n} from '../source-code/source-code-file';\n\nimport {\n  SkyDocsCodeExampleModuleDependencies\n} from './code-example-module-dependencies';\n\nexport interface SkyDocsCodeExample {\n\n  title: string;\n\n  sourceCode: SkyDocsSourceCodeFile[];\n\n  packageDependencies: SkyDocsCodeExampleModuleDependencies;\n\n}\n",
+            "properties": [
+                {
+                    "name": "packageDependencies",
+                    "type": "SkyDocsCodeExampleModuleDependencies",
+                    "optional": false,
+                    "description": "",
+                    "line": 15
+                },
+                {
+                    "name": "sourceCode",
+                    "type": "SkyDocsSourceCodeFile[]",
+                    "optional": false,
+                    "description": "",
+                    "line": 13
+                },
+                {
+                    "name": "title",
+                    "type": "string",
+                    "optional": false,
+                    "description": "",
+                    "line": 11
+                }
+            ],
+            "indexSignatures": [],
+            "kind": 150,
+            "methods": []
+        },
+        {
+            "name": "SkyDocsSourceCodeFile",
+            "id": "interface-SkyDocsSourceCodeFile-56ad7ab0641598fc79bfc8b9025f220c",
+            "file": "src/app/public/modules/source-code/source-code-file.ts",
+            "type": "interface",
+            "sourceCode": "export interface SkyDocsSourceCodeFile {\n\n  fileName: string;\n\n  filePath: string;\n\n  rawContents: string;\n\n}\n",
+            "properties": [
+                {
+                    "name": "fileName",
+                    "type": "string",
+                    "optional": false,
+                    "description": "",
+                    "line": 3
+                },
+                {
+                    "name": "filePath",
+                    "type": "string",
+                    "optional": false,
+                    "description": "",
+                    "line": 5
+                },
+                {
+                    "name": "rawContents",
+                    "type": "string",
+                    "optional": false,
+                    "description": "",
+                    "line": 7
+                }
+            ],
+            "indexSignatures": [],
+            "kind": 150,
+            "methods": []
+        },
+        {
+            "name": "SkyPropertyDefinition",
+            "id": "interface-SkyPropertyDefinition-a617452f237202e868cc5fe39d2cebf6",
+            "file": "src/app/public/modules/property-definitions/property-definition.ts",
+            "type": "interface",
+            "sourceCode": "import {\n  TemplateRef\n} from '@angular/core';\n\nexport interface SkyPropertyDefinition {\n  dataType: string;\n  defaultValue: string;\n  isDeprecated: boolean;\n  isRequired: boolean;\n  propertyName: string;\n  description?: string;\n  templateRef?: TemplateRef<any>;\n}\n",
+            "properties": [
+                {
+                    "name": "dataType",
+                    "type": "string",
+                    "optional": false,
+                    "description": "",
+                    "line": 6
+                },
+                {
+                    "name": "defaultValue",
+                    "type": "string",
+                    "optional": false,
+                    "description": "",
+                    "line": 7
+                },
+                {
+                    "name": "description",
+                    "type": "string",
+                    "optional": true,
+                    "description": "",
+                    "line": 11
+                },
+                {
+                    "name": "isDeprecated",
+                    "type": "boolean",
+                    "optional": false,
+                    "description": "",
+                    "line": 8
+                },
+                {
+                    "name": "isRequired",
+                    "type": "boolean",
+                    "optional": false,
+                    "description": "",
+                    "line": 9
+                },
+                {
+                    "name": "propertyName",
+                    "type": "string",
+                    "optional": false,
+                    "description": "",
+                    "line": 10
+                },
+                {
+                    "name": "templateRef",
+                    "type": "TemplateRef<any>",
+                    "optional": true,
+                    "description": "",
+                    "line": 12
+                }
+            ],
+            "indexSignatures": [],
+            "kind": 150,
+            "methods": []
+        }
+    ],
+    "injectables": [
+        {
+            "name": "SkyDocsCodeExamplesEditorService",
+            "id": "injectable-SkyDocsCodeExamplesEditorService-fd6c97db666561a06a8e0ff1d79cba24",
+            "file": "src/app/public/modules/code-examples/code-examples-editor.service.ts",
+            "properties": [],
+            "methods": [
+                {
+                    "name": "launchEditor",
+                    "args": [
+                        {
+                            "name": "codeExample",
+                            "type": "SkyDocsCodeExample"
+                        }
+                    ],
+                    "optional": false,
+                    "returnType": "void",
+                    "typeParameters": [],
+                    "line": 27,
+                    "modifierKind": [
+                        114
+                    ],
+                    "jsdoctags": [
+                        {
+                            "name": "codeExample",
+                            "type": "SkyDocsCodeExample",
+                            "tagName": {
+                                "text": "param"
+                            }
+                        }
+                    ]
+                }
+            ],
+            "description": "",
+            "sourceCode": "import {\n  Injectable\n} from '@angular/core';\n\nimport StackBlitzSDK from '@stackblitz/sdk';\n\nimport {\n  OpenOptions as StackBlitzOpenOptions,\n  Project as StackBlitzProject\n} from '@stackblitz/sdk/typings/interfaces';\n\nimport {\n  SkyDocsSourceCodeFile\n} from '../source-code/source-code-file';\n\nimport {\n  SkyDocsCodeExampleModuleDependencies\n} from './code-example-module-dependencies';\n\nimport {\n  SkyDocsCodeExample\n} from './code-example';\n\n@Injectable()\nexport class SkyDocsCodeExamplesEditorService {\n\n  public launchEditor(codeExample: SkyDocsCodeExample): void {\n    const project = this.getPayload(codeExample);\n    const options: StackBlitzOpenOptions = {};\n\n    StackBlitzSDK.openProject(project, options);\n  }\n\n  private getPayload(codeExample: SkyDocsCodeExample): StackBlitzProject {\n    const angularVersion = '^7.0.0';\n    const skyuxVersion = '^3.0.0';\n\n    const defaultDependencies: SkyDocsCodeExampleModuleDependencies = {\n      '@angular/animations': angularVersion,\n      '@angular/common': angularVersion,\n      '@angular/compiler': angularVersion,\n      '@angular/core': angularVersion,\n      '@angular/forms': angularVersion,\n      '@angular/http': angularVersion,\n      '@angular/platform-browser': angularVersion,\n      '@angular/platform-browser-dynamic': angularVersion,\n      '@angular/router': angularVersion,\n      '@skyux/animations': skyuxVersion,\n      '@skyux/assets': skyuxVersion,\n      '@skyux/config': skyuxVersion,\n      '@skyux/core': skyuxVersion,\n      '@skyux/errors': skyuxVersion,\n      '@skyux/forms': skyuxVersion,\n      '@skyux/http': skyuxVersion,\n      '@skyux/i18n': skyuxVersion,\n      '@skyux/indicators': skyuxVersion,\n      '@skyux/layout': skyuxVersion,\n      '@skyux/modals': skyuxVersion,\n      '@skyux/popovers': skyuxVersion,\n      '@skyux/router': skyuxVersion,\n      '@skyux/theme': skyuxVersion,\n      'core-js': '2.6.5',\n      'rxjs': '^6.0.0',\n      'rxjs-compat': '^6.0.0',\n      'tslib': '1.9.3',\n      'zone.js': '~0.8.28'\n    };\n\n    const mergedDependencies = Object.assign(\n      {},\n      defaultDependencies,\n      codeExample.packageDependencies\n    );\n\n    const files = this.parseStackBlitzFiles(\n      codeExample.sourceCode,\n      mergedDependencies\n    );\n\n    return {\n      files,\n      title: 'SKY UX Demo',\n      description: 'SKY UX Demo',\n      template: 'angular-cli',\n      dependencies: mergedDependencies,\n      settings: {\n        compile: {\n          clearConsole: false\n        }\n      }\n    };\n  }\n\n  private parseStackBlitzFiles(\n    sourceCode: SkyDocsSourceCodeFile[],\n    dependencies: SkyDocsCodeExampleModuleDependencies\n  ): {\n    [path: string]: string;\n  } {\n\n    const srcPath = 'src/';\n    const appPath = `${srcPath}app/`;\n\n    const banner = `/**\n * This file is needed for the StackBlitz demo only.\n * It is automatically built when using SKY UX CLI.\n * Visit https://developer.blackbaud/skyux for more information\n **/\n `;\n\n    const moduleImportStatements: string[] = [\n      `import {\\n  Component,\\n  NgModule\\n} from '@angular/core';`,\n      `import {\\n  FormsModule,\\n  ReactiveFormsModule\\n} from '@angular/forms';`,\n      `import {\\n  platformBrowserDynamic\\n} from '@angular/platform-browser-dynamic';`,\n      `import {\\n  BrowserModule\\n} from '@angular/platform-browser';`,\n      `import {\\n  RouterModule\\n} from '@angular/router';`,\n      `import {\\n  AppComponent\\n} from './app.component';`\n    ];\n\n    const moduleImports: string[] = [\n      'BrowserModule',\n      'FormsModule',\n      'ReactiveFormsModule',\n      'RouterModule.forRoot([])'\n    ];\n\n    const files: {[_: string]: string} = {};\n\n    let appComponentTemplate = '';\n\n    sourceCode.forEach((file) => {\n      files[`${appPath}${file.fileName}`] = file.rawContents;\n\n      // Setup module imports and component selectors.\n      if (file.fileName.indexOf('.module.ts') > -1) {\n        const moduleName = this.getModuleName(file.rawContents);\n        const importPath = `./${this.getFilenameNoExtension(file.fileName)}`;\n\n        const exportedComponent = this.getExportedComponent(file.rawContents);\n        const componentSelector = this.getComponentSelector(exportedComponent, sourceCode);\n\n        appComponentTemplate += `<${componentSelector}></${componentSelector}>`;\n\n        moduleImports.push(moduleName);\n        moduleImportStatements.push(`import {\\n  ${moduleName}\\n} from '${importPath}';`);\n      }\n    });\n\n    files[`${appPath}app.component.ts`] = `${banner}\nimport {\n  Component\n} from '@angular/core';\n\n@Component({\n  selector: 'sky-demo-app',\n  template: '${appComponentTemplate}'\n})\nexport class AppComponent { }`;\n\n    files[`${appPath}app.module.ts`] = `${moduleImportStatements.join('\\n\\n')}\n\n@NgModule({\n  imports: [\n    ${moduleImports.join(',\\n    ')}\n  ],\n  declarations: [\n    AppComponent\n  ],\n  bootstrap: [\n    AppComponent\n  ]\n})\nexport class AppModule { }\n`;\n\n    files[`${srcPath}index.html`] = `<sky-demo-app>\n  Loading...\n</sky-demo-app>`;\n\n    files[`${srcPath}main.ts`] = `${banner}\nimport './polyfills';\n\nimport {\n  enableProdMode\n} from '@angular/core';\n\nimport {\n  platformBrowserDynamic\n} from '@angular/platform-browser-dynamic';\n\nimport {\n  AppModule\n} from './app/app.module';\n\nplatformBrowserDynamic().bootstrapModule(AppModule).then(ref => {\n  if (window['ngRef']) {\n    window['ngRef'].destroy();\n  }\n\n  window['ngRef'] = ref;\n}).catch(err => console.error(err));\n`;\n\n    files[`${srcPath}polyfills.ts`] = `${banner}\nimport 'core-js/es6/reflect';\nimport 'core-js/es7/reflect';\nimport 'zone.js/dist/zone';\n`;\n\n    files[`${srcPath}styles.scss`] = `@import '~@skyux/theme/css/sky';\n\nbody {\n  background-color: #fff;\n  margin: 15px;\n}`;\n\n    files['angular.json'] = `{\n  \"projects\": {\n    \"demo\": {\n      \"architect\": {\n        \"build\": {\n          \"options\": {\n            \"index\": \"src/index.html\",\n            \"styles\": [\n              \"src/styles.scss\"\n            ]\n          }\n        }\n      }\n    }\n  }\n}`;\n\n    files['package.json'] = JSON.stringify({\n      dependencies\n    }, undefined, 2);\n\n    files['tsconfig.json'] = `{\n  \"compilerOptions\": {\n    \"target\": \"es5\",\n    \"moduleResolution\": \"node\",\n    \"emitDecoratorMetadata\": true,\n    \"experimentalDecorators\": true,\n    \"importHelpers\": true,\n    \"lib\": [\n      \"dom\",\n      \"es6\"\n    ]\n  }\n}`;\n\n    return files;\n  }\n\n  private getModuleName(contents: string): string {\n    return contents.split('export class ')[1].split(' {')[0];\n  }\n\n  private getFilenameNoExtension(fileName: string): string {\n    const extension = fileName.split('.').pop();\n    return fileName.replace(`.${extension}`, '');\n  }\n\n  private getExportedComponent(contents: string): string {\n    const trimmed = contents.replace(/\\s/g, '');\n\n    let fragment = trimmed.split('exports:[')[1];\n\n    if (!fragment) {\n      throw 'You must export a component from the code example module!';\n    }\n\n    fragment = fragment.split(']')[0];\n\n    const components = fragment.split(',');\n\n    if (components.length > 1) {\n      throw 'You may only export a single component from the code example module' +\n        `(we found ${components.length}: ${components.join(', ')}).` +\n        'Is it possible to create a new code example with the extra components?';\n    }\n\n    return components[0];\n  }\n\n  private getComponentSelector(\n    componentClassName: string,\n    sourceCode: SkyDocsSourceCodeFile[]\n  ): string {\n\n    const found = sourceCode.find((file) => {\n      return (file.rawContents.indexOf(componentClassName) > -1);\n    });\n\n    const trimmed = found.rawContents.replace(/\\s/g, '');\n\n    return trimmed.split(`selector:'`)[1].split(`'`)[0];\n  }\n\n}\n",
+            "type": "injectable"
+        },
+        {
+            "name": "SkyDocsSourceCodeProvider",
+            "id": "injectable-SkyDocsSourceCodeProvider-d0f9951a2edabd36b34ad6260e7c7762",
+            "file": "src/app/public/modules/source-code/source-code-provider.ts",
+            "properties": [
+                {
+                    "name": "getSourceCode",
+                    "type": "function",
+                    "optional": false,
+                    "description": "",
+                    "line": 12,
+                    "modifierKind": [
+                        114
+                    ]
+                }
+            ],
+            "methods": [],
+            "description": "",
+            "sourceCode": "import {\n  Injectable\n} from '@angular/core';\n\nimport {\n  SkyDocsSourceCodeFile\n} from './source-code-file';\n\n@Injectable()\nexport abstract class SkyDocsSourceCodeProvider {\n\n  public getSourceCode: (path: string) => SkyDocsSourceCodeFile[];\n\n}\n",
+            "type": "injectable"
+        }
+    ],
+    "classes": [],
+    "directives": [],
+    "components": [
+        {
+            "name": "SkyDocsBehaviorDemoComponent",
+            "id": "component-SkyDocsBehaviorDemoComponent-4550e4903c1e38d0bc17ca94a247b26a",
+            "file": "src/app/public/modules/behavior-demo/behavior-demo.component.ts",
+            "changeDetection": "ChangeDetectionStrategy.OnPush",
+            "encapsulation": [],
+            "entryComponents": [],
+            "inputs": [],
+            "outputs": [],
+            "providers": [],
+            "selector": "sky-docs-behavior-demo",
+            "styleUrls": [],
+            "styles": [],
+            "templateUrl": [
+                "./behavior-demo.component.html"
+            ],
+            "viewProviders": [],
+            "inputsClass": [],
+            "outputsClass": [],
+            "propertiesClass": [],
+            "methodsClass": [],
+            "hostBindings": [],
+            "hostListeners": [],
+            "description": "",
+            "rawdescription": "",
+            "type": "component",
+            "sourceCode": "import {\n  ChangeDetectionStrategy,\n  Component\n} from '@angular/core';\n\n@Component({\n  selector: 'sky-docs-behavior-demo',\n  templateUrl: './behavior-demo.component.html',\n  changeDetection: ChangeDetectionStrategy.OnPush\n})\nexport class SkyDocsBehaviorDemoComponent {\n}\n",
+            "assetsDirs": [],
+            "styleUrlsData": "",
+            "stylesData": "",
+            "templateData": "<div class=\"sky-docs-behavior-demo\">\n  <ng-content></ng-content>\n</div>"
+        },
+        {
+            "name": "SkyDocsBehaviorDemoControlsComponent",
+            "id": "component-SkyDocsBehaviorDemoControlsComponent-50b09c8ffd178f1511c97c3e810d4491",
+            "file": "src/app/public/modules/behavior-demo/behavior-demo-controls.component.ts",
+            "changeDetection": "ChangeDetectionStrategy.OnPush",
+            "encapsulation": [],
+            "entryComponents": [],
+            "inputs": [],
+            "outputs": [],
+            "providers": [],
+            "selector": "sky-docs-behavior-demo-controls",
+            "styleUrls": [],
+            "styles": [],
+            "templateUrl": [
+                "./behavior-demo-controls.component.html"
+            ],
+            "viewProviders": [],
+            "inputsClass": [],
+            "outputsClass": [],
+            "propertiesClass": [],
+            "methodsClass": [],
+            "hostBindings": [],
+            "hostListeners": [],
+            "description": "",
+            "rawdescription": "",
+            "type": "component",
+            "sourceCode": "import {\n  ChangeDetectionStrategy,\n  Component\n} from '@angular/core';\n\n@Component({\n  selector: 'sky-docs-behavior-demo-controls',\n  templateUrl: './behavior-demo-controls.component.html',\n  changeDetection: ChangeDetectionStrategy.OnPush\n})\nexport class SkyDocsBehaviorDemoControlsComponent {\n}\n",
+            "assetsDirs": [],
+            "styleUrlsData": "",
+            "stylesData": "",
+            "templateData": "<div class=\"sky-docs-behavior-demo-controls\">\n  <ng-content></ng-content>\n</div>"
+        },
+        {
+            "name": "SkyDocsCodeExampleComponent",
+            "id": "component-SkyDocsCodeExampleComponent-0c146d934900aaa223c065a45c8f4a89",
+            "file": "src/app/public/modules/code-examples/code-example.component.ts",
+            "encapsulation": [],
+            "entryComponents": [],
+            "inputs": [],
+            "outputs": [],
+            "providers": [],
+            "selector": "sky-docs-code-example",
+            "styleUrls": [],
+            "styles": [],
+            "template": "",
+            "templateUrl": [],
+            "viewProviders": [],
+            "inputsClass": [
+                {
+                    "name": "sourceCodeLocation",
+                    "line": 13,
+                    "type": "string"
+                },
+                {
+                    "name": "title",
+                    "line": 16,
+                    "type": "string"
+                }
+            ],
+            "outputsClass": [],
+            "propertiesClass": [],
+            "methodsClass": [],
+            "hostBindings": [],
+            "hostListeners": [],
+            "description": "",
+            "rawdescription": "",
+            "type": "component",
+            "sourceCode": "import {\n  Component,\n  Input\n} from '@angular/core';\n\n@Component({\n  selector: 'sky-docs-code-example',\n  template: ''\n})\nexport class SkyDocsCodeExampleComponent {\n\n  @Input()\n  public sourceCodeLocation: string;\n\n  @Input()\n  public title: string;\n\n}\n",
+            "assetsDirs": [],
+            "styleUrlsData": "",
+            "stylesData": ""
+        },
+        {
+            "name": "SkyDocsCodeExamplesComponent",
+            "id": "component-SkyDocsCodeExamplesComponent-be9f7defd9efce6a3d5a7f654030c56c",
+            "file": "src/app/public/modules/code-examples/code-examples.component.ts",
+            "changeDetection": "ChangeDetectionStrategy.OnPush",
+            "encapsulation": [],
+            "entryComponents": [],
+            "inputs": [],
+            "outputs": [],
+            "providers": [],
+            "selector": "sky-docs-code-examples",
+            "styleUrls": [
+                "./code-examples.component.scss"
+            ],
+            "styles": [],
+            "templateUrl": [
+                "./code-examples.component.html"
+            ],
+            "viewProviders": [],
+            "inputsClass": [
+                {
+                    "name": "packageDependencies",
+                    "line": 39,
+                    "type": ""
+                }
+            ],
+            "outputsClass": [],
+            "propertiesClass": [
+                {
+                    "name": "codeExamples",
+                    "defaultValue": "[]",
+                    "type": "SkyDocsCodeExample[]",
+                    "optional": false,
+                    "description": "",
+                    "line": 47,
+                    "modifierKind": [
+                        114
+                    ]
+                }
+            ],
+            "methodsClass": [
+                {
+                    "name": "launchEditor",
+                    "args": [
+                        {
+                            "name": "codeExample",
+                            "type": "SkyDocsCodeExample"
+                        }
+                    ],
+                    "optional": false,
+                    "returnType": "void",
+                    "typeParameters": [],
+                    "line": 75,
+                    "modifierKind": [
+                        114
+                    ],
+                    "jsdoctags": [
+                        {
+                            "name": "codeExample",
+                            "type": "SkyDocsCodeExample",
+                            "tagName": {
+                                "text": "param"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "parseCodeLanguageType",
+                    "args": [
+                        {
+                            "name": "fileName",
+                            "type": "string"
+                        }
+                    ],
+                    "optional": false,
+                    "returnType": "string",
+                    "typeParameters": [],
+                    "line": 84,
+                    "description": "<p>Returns a string representing one of PrismJS&#39;s supported language types.\nSee: https://prismjs.com/#supported-languages</p>\n",
+                    "modifierKind": [
+                        114
+                    ],
+                    "jsdoctags": [
+                        {
+                            "name": {
+                                "pos": 2215,
+                                "end": 2223,
+                                "flags": 0,
+                                "escapedText": "fileName"
+                            },
+                            "type": "string",
+                            "tagName": {
+                                "pos": 2209,
+                                "end": 2214,
+                                "flags": 0,
+                                "escapedText": "param"
+                            },
+                            "comment": ""
+                        }
+                    ]
+                }
+            ],
+            "hostBindings": [],
+            "hostListeners": [],
+            "description": "",
+            "rawdescription": "",
+            "type": "component",
+            "sourceCode": "import {\n  AfterContentInit,\n  ChangeDetectionStrategy,\n  Component,\n  ContentChildren,\n  QueryList,\n  Input\n} from '@angular/core';\n\nimport {\n  SkyDocsSourceCodeProvider\n} from '../source-code/source-code-provider';\n\nimport {\n  SkyDocsCodeExamplesEditorService\n} from './code-examples-editor.service';\n\nimport {\n  SkyDocsCodeExampleComponent\n} from './code-example.component';\n\nimport {\n  SkyDocsCodeExampleModuleDependencies\n} from './code-example-module-dependencies';\n\nimport {\n  SkyDocsCodeExample\n} from './code-example';\n\n@Component({\n  selector: 'sky-docs-code-examples',\n  templateUrl: './code-examples.component.html',\n  styleUrls: ['./code-examples.component.scss'],\n  changeDetection: ChangeDetectionStrategy.OnPush\n})\nexport class SkyDocsCodeExamplesComponent implements AfterContentInit {\n\n  @Input()\n  public set packageDependencies(value: SkyDocsCodeExampleModuleDependencies) {\n    this._packageDependencies = value;\n  }\n\n  public get packageDependencies(): SkyDocsCodeExampleModuleDependencies {\n    return this._packageDependencies || {};\n  }\n\n  public codeExamples: SkyDocsCodeExample[] = [];\n\n  @ContentChildren(SkyDocsCodeExampleComponent)\n  private codeExampleComponents: QueryList<SkyDocsCodeExampleComponent>;\n\n  private _packageDependencies: SkyDocsCodeExampleModuleDependencies;\n\n  constructor(\n    private editorService: SkyDocsCodeExamplesEditorService,\n    private sourceCodeProvider: SkyDocsSourceCodeProvider\n  ) { }\n\n  public ngAfterContentInit(): void {\n    this.codeExampleComponents.forEach((component) => {\n      const sourceCode = this.sourceCodeProvider.getSourceCode(component.sourceCodeLocation);\n\n      if (!sourceCode.length) {\n        throw `No source code found at location \"${component.sourceCodeLocation}\" for \"${component.title}\"!`;\n      }\n\n      this.codeExamples.push({\n        title: component.title,\n        sourceCode,\n        packageDependencies: this.packageDependencies\n      });\n    });\n  }\n\n  public launchEditor(codeExample: SkyDocsCodeExample): void {\n    this.editorService.launchEditor(codeExample);\n  }\n\n  /**\n   * Returns a string representing one of PrismJS's supported language types.\n   * See: https://prismjs.com/#supported-languages\n   * @param fileName\n   */\n  public parseCodeLanguageType(fileName: string): string {\n    const extension = fileName.split('.').pop().toLowerCase();\n\n    switch (extension) {\n      case 'ts':\n        return 'typescript';\n      case 'html':\n        return 'markup';\n      default:\n        return extension;\n    }\n  }\n}\n",
+            "assetsDirs": [],
+            "styleUrlsData": [
+                {
+                    "data": ".sky-docs-code-example-header {\n  display: flex;\n  align-items: baseline;\n}\n\n.sky-docs-code-example-header-title {\n  flex-grow: 1;\n}\n\n.sky-docs-code-example-header-controls {\n  flex-grow: 0;\n\n  .sky-btn {\n    font-weight: normal;\n  }\n}",
+                    "styleUrl": "./code-examples.component.scss"
+                }
+            ],
+            "stylesData": "",
+            "constructorObj": {
+                "name": "constructor",
+                "description": "",
+                "args": [
+                    {
+                        "name": "editorService",
+                        "type": "SkyDocsCodeExamplesEditorService"
+                    },
+                    {
+                        "name": "sourceCodeProvider",
+                        "type": "SkyDocsSourceCodeProvider"
+                    }
+                ],
+                "line": 52,
+                "jsdoctags": [
+                    {
+                        "name": "editorService",
+                        "type": "SkyDocsCodeExamplesEditorService",
+                        "tagName": {
+                            "text": "param"
+                        }
+                    },
+                    {
+                        "name": "sourceCodeProvider",
+                        "type": "SkyDocsSourceCodeProvider",
+                        "tagName": {
+                            "text": "param"
+                        }
+                    }
+                ]
+            },
+            "implements": [
+                "AfterContentInit"
+            ],
+            "accessors": {
+                "packageDependencies": {
+                    "name": "packageDependencies",
+                    "setSignature": {
+                        "name": "packageDependencies",
+                        "type": "void",
+                        "args": [
+                            {
+                                "name": "value",
+                                "type": ""
+                            }
+                        ],
+                        "returnType": "void",
+                        "line": 39,
+                        "jsdoctags": [
+                            {
+                                "name": "value",
+                                "type": "",
+                                "tagName": {
+                                    "text": "param"
+                                }
+                            }
+                        ]
+                    },
+                    "getSignature": {
+                        "name": "packageDependencies",
+                        "type": "",
+                        "returnType": "SkyDocsCodeExampleModuleDependencies",
+                        "line": 43
+                    }
+                }
+            },
+            "templateData": "<div *ngIf=\"codeExamples && codeExamples.length\"\n  class=\"sky-docs-code-examples\"\n>\n  <sky-repeater *ngIf=\"codeExamples.length > 1 else singleCodeExample\"\n    expandMode=\"single\"\n  >\n    <sky-repeater-item *ngFor=\"let codeExample of codeExamples\">\n      <sky-repeater-item-title>\n        <ng-container *ngTemplateOutlet=\"codeExampleHeaderTemplate; context: {$implicit: codeExample}\">\n        </ng-container>\n      </sky-repeater-item-title>\n      <sky-repeater-item-content>\n        <ng-container *ngTemplateOutlet=\"codeExampleTemplate; context: {$implicit: codeExample}\">\n        </ng-container>\n      </sky-repeater-item-content>\n    </sky-repeater-item>\n  </sky-repeater>\n</div>\n\n<ng-template>\n  <ng-content\n    select=\"sky-docs-code-example\"\n  >\n  </ng-content>\n</ng-template>\n\n<ng-template\n  let-item\n  #codeExampleTemplate\n>\n  <sky-vertical-tabset *ngIf=\"item.sourceCode && item.sourceCode.length\">\n    <sky-vertical-tab *ngFor=\"let file of item.sourceCode; let i = index;\"\n      [active]=\"i === 0\"\n      [tabHeading]=\"file.fileName\"\n    >\n      <sky-code-block\n        [code]=\"file.rawContents\"\n        [languageType]=\"parseCodeLanguageType(file.fileName)\"\n      >\n      </sky-code-block>\n    </sky-vertical-tab>\n  </sky-vertical-tabset>\n</ng-template>\n\n<ng-template\n  #singleCodeExample\n>\n  <ng-container *ngTemplateOutlet=\"codeExampleHeaderTemplate; context: {$implicit: codeExamples[0]}\">\n  </ng-container>\n  <ng-container *ngTemplateOutlet=\"codeExampleTemplate; context: {$implicit: codeExamples[0]}\">\n  </ng-container>\n</ng-template>\n\n<ng-template\n  let-codeExample\n  #codeExampleHeaderTemplate\n>\n  <div\n    class=\"sky-docs-code-example-header\"\n  >\n    <div\n      class=\"sky-docs-code-example-header-title sky-emphasized\"\n    >\n      {{ codeExample.title }}\n    </div>\n    <div\n      class=\"sky-docs-code-example-header-controls\"\n    >\n      <button\n        class=\"sky-btn sky-btn-default\"\n        type=\"button\"\n        (click)=\"launchEditor(codeExample);$event.stopPropagation();\"\n      >\n        <sky-icon\n          icon=\"pencil\"\n        ></sky-icon>\n        {{ 'sky-docs-code-example-launch-button-label' | skyLibResources }}\n      </button>\n    </div>\n  </div>\n</ng-template>"
+        },
+        {
+            "name": "SkyDocsDemoPageComponent",
+            "id": "component-SkyDocsDemoPageComponent-1c22233e1114094a82f861196c53e3d7",
+            "file": "src/app/public/modules/demo-page/demo-page.component.ts",
+            "changeDetection": "ChangeDetectionStrategy.OnPush",
+            "encapsulation": [],
+            "entryComponents": [],
+            "inputs": [],
+            "outputs": [],
+            "providers": [],
+            "selector": "sky-docs-demo-page",
+            "styleUrls": [],
+            "styles": [],
+            "templateUrl": [
+                "./demo-page.component.html"
+            ],
+            "viewProviders": [],
+            "inputsClass": [
+                {
+                    "name": "foobar",
+                    "description": "<p>The foobar. Default: &#39;value&#39;</p>\n",
+                    "line": 52,
+                    "type": "string"
+                },
+                {
+                    "name": "gitRepoUrl",
+                    "description": "<p>The URL to this module&#39;s source code repository.</p>\n",
+                    "line": 28,
+                    "type": "string"
+                },
+                {
+                    "name": "moduleName",
+                    "description": "<p>The name of the Angular module the consumer will import into their project.</p>\n",
+                    "line": 34,
+                    "type": "string"
+                },
+                {
+                    "name": "packageName",
+                    "description": "<p>The name of the NPM package.</p>\n",
+                    "line": 40,
+                    "type": "string"
+                },
+                {
+                    "name": "pageTitle",
+                    "description": "<p>The page title.</p>\n",
+                    "line": 46,
+                    "type": "string"
+                }
+            ],
+            "outputsClass": [],
+            "propertiesClass": [],
+            "methodsClass": [],
+            "hostBindings": [],
+            "hostListeners": [],
+            "description": "",
+            "rawdescription": "",
+            "type": "component",
+            "sourceCode": "import {\n  ChangeDetectionStrategy,\n  Component,\n  Input,\n  OnInit\n} from '@angular/core';\n\nimport {\n  SkyDocsDemoPageTitleService\n} from './demo-page-title.service';\nimport { SkyPropertyDefinition } from '../property-definitions/property-definition';\n\n// import { SkyPropertyDefinition } from '../property-definitions/property-definition';\n\nconst documentationData: any = require('../../../../../documentation/documentation.json');\n\n@Component({\n  selector: 'sky-docs-demo-page',\n  templateUrl: './demo-page.component.html',\n  changeDetection: ChangeDetectionStrategy.OnPush\n})\nexport class SkyDocsDemoPageComponent implements OnInit {\n\n  /**\n   * The URL to this module's source code repository.\n   */\n  @Input()\n  public gitRepoUrl: string;\n\n  /**\n   * The name of the Angular module the consumer will import into their project.\n   */\n  @Input()\n  public moduleName: string;\n\n  /**\n   * The name of the NPM package.\n   */\n  @Input()\n  public packageName: string;\n\n  /**\n   * The page title.\n   */\n  @Input()\n  public pageTitle: string;\n\n  /**\n   * The foobar. Default: 'value'\n   */\n  @Input()\n  public set foobar(value: string) {\n    this._foobar = value;\n  }\n\n  public get foobar(): string {\n    return this._foobar;\n  }\n\n  private _foobar: string;\n\n\n  /**\n   * @internal\n   */\n  public propertyDefinitions: {\n    title: string;\n    propertyDefinitions: SkyPropertyDefinition[]\n  }[] = [];\n\n  constructor(\n    private titleService: SkyDocsDemoPageTitleService\n  ) { }\n\n  public ngOnInit(): void {\n    this.updateTitle();\n\n    console.log('Documentation:', documentationData);\n\n    const moduleDef = documentationData.modules.find((m: any) => m.name === this.moduleName);\n\n    const declarations = moduleDef.children.find((child: any) => {\n      return child.type === 'declarations';\n    });\n\n    declarations.elements.forEach((declaration: any) => {\n      const componentDef = documentationData.components.find((p: any) => p.name === declaration.name);\n      console.log('componentDef?', componentDef);\n\n      this.propertyDefinitions.push({\n        title: `${componentDef.name} properties`,\n        propertyDefinitions: componentDef.inputsClass.map((property: any) => {\n          const isRequired = (\n            property.defaultValue === undefined &&\n            property.description &&\n            property.description.indexOf('Default:') === -1\n          );\n\n          return {\n            dataType: property.type,\n            defaultValue: property.defaultValue,\n            description: property.description,\n            isRequired,\n            propertyName: property.name\n          };\n        })\n      });\n    });\n\n    console.log('Final config:', this.propertyDefinitions);\n\n    // const providers = moduleDef.children.find((child: any) => {\n    //   return child.type === 'providers';\n    // });\n\n    // providers.elements.forEach((provider: any) => {\n    //   const providerDef = documentationData.injectables.find((p: any) => p.name === provider.name);\n    //   console.log('eh?', providerDef);\n    //   // propertyDefinitions.push({\n    //   //   title: providerDef.name,\n    //   //   propertyDefinitions: {\n    //   //     dataType: string;\n    //   //     defaultValue: string;\n    //   //     isRequired: boolean;\n    //   //     propertyName: string;\n    //   //   }\n    //   // });\n    // });\n  }\n\n  private updateTitle(): void {\n    if (this.pageTitle) {\n      this.titleService.setTitle(this.pageTitle, 'Components');\n    }\n  }\n\n}\n",
+            "assetsDirs": [],
+            "styleUrlsData": "",
+            "stylesData": "",
+            "constructorObj": {
+                "name": "constructor",
+                "description": "",
+                "args": [
+                    {
+                        "name": "titleService",
+                        "type": "SkyDocsDemoPageTitleService"
+                    }
+                ],
+                "line": 69,
+                "jsdoctags": [
+                    {
+                        "name": "titleService",
+                        "type": "SkyDocsDemoPageTitleService",
+                        "tagName": {
+                            "text": "param"
+                        }
+                    }
+                ]
+            },
+            "implements": [
+                "OnInit"
+            ],
+            "accessors": {
+                "foobar": {
+                    "name": "foobar",
+                    "setSignature": {
+                        "name": "foobar",
+                        "type": "void",
+                        "args": [
+                            {
+                                "name": "value",
+                                "type": "string"
+                            }
+                        ],
+                        "returnType": "void",
+                        "line": 52,
+                        "description": "<p>The foobar. Default: &#39;value&#39;</p>\n",
+                        "jsdoctags": [
+                            {
+                                "name": "value",
+                                "type": "string",
+                                "tagName": {
+                                    "text": "param"
+                                }
+                            }
+                        ]
+                    },
+                    "getSignature": {
+                        "name": "foobar",
+                        "type": "string",
+                        "returnType": "string",
+                        "line": 56
+                    }
+                }
+            },
+            "templateData": "<div\n  class=\"sky-docs-demo-page\"\n>\n  <stache\n    layout=\"container\"\n    [pageTitle]=\"pageTitle\"\n    [showBreadcrumbs]=\"false\"\n  >\n\n    <stache-page-summary>\n      <ng-content select=\"sky-docs-demo-page-summary\"></ng-content>\n    </stache-page-summary>\n\n    <sky-docs-demo-page-section\n      heading=\"Behavior demo\"\n    >\n      <sky-docs-behavior-demo>\n      </sky-docs-behavior-demo>\n    </sky-docs-demo-page-section>\n\n    <sky-docs-demo-page-section *ngIf=\"packageName\"\n      heading=\"Modules and installation\"\n    >\n      <sky-docs-demo-page-module-info\n        [gitRepoUrl]=\"gitRepoUrl\"\n        [moduleName]=\"moduleName\"\n        [packageName]=\"packageName\"\n      >\n      </sky-docs-demo-page-module-info>\n    </sky-docs-demo-page-section>\n\n    <sky-docs-demo-page-section *ngFor=\"let definition of propertyDefinitions\"\n      [heading]=\"definition.title\"\n    >\n      <sky-docs-property-definitions *ngFor=\"let property of definition.propertyDefinitions\">\n        <sky-docs-property-definition\n          [propertyName]=\"property.propertyName\"\n          [dataType]=\"property.dataType\"\n          [defaultValue]=\"property.defaultValue\"\n          [description]=\"property.description\"\n          [isDeprecated]=\"property.isDeprecated\"\n          [isRequired]=\"property.isRequired\"\n        >\n        </sky-docs-property-definition>\n      </sky-docs-property-definitions>\n    </sky-docs-demo-page-section>\n\n    <ng-content></ng-content>\n\n    <sky-docs-demo-page-section\n      heading=\"Code examples\"\n    >\n      <ng-content select=\"sky-docs-code-examples\">\n      </ng-content>\n    </sky-docs-demo-page-section>\n  </stache>\n</div>\n"
+        },
+        {
+            "name": "SkyDocsDemoPageSectionComponent",
+            "id": "component-SkyDocsDemoPageSectionComponent-9ab1e7298bc0448930871b1cbf49728c",
+            "file": "src/app/public/modules/demo-page/demo-page-section.component.ts",
+            "changeDetection": "ChangeDetectionStrategy.OnPush",
+            "encapsulation": [],
+            "entryComponents": [],
+            "inputs": [],
+            "outputs": [],
+            "providers": [],
+            "selector": "sky-docs-demo-page-section",
+            "styleUrls": [],
+            "styles": [],
+            "templateUrl": [
+                "./demo-page-section.component.html"
+            ],
+            "viewProviders": [],
+            "inputsClass": [
+                {
+                    "name": "heading",
+                    "line": 15,
+                    "type": "string"
+                }
+            ],
+            "outputsClass": [],
+            "propertiesClass": [],
+            "methodsClass": [],
+            "hostBindings": [],
+            "hostListeners": [],
+            "description": "",
+            "rawdescription": "",
+            "type": "component",
+            "sourceCode": "import {\n  ChangeDetectionStrategy,\n  Component,\n  Input\n} from '@angular/core';\n\n@Component({\n  selector: 'sky-docs-demo-page-section',\n  templateUrl: './demo-page-section.component.html',\n  changeDetection: ChangeDetectionStrategy.OnPush\n})\nexport class SkyDocsDemoPageSectionComponent {\n\n  @Input()\n  public heading: string;\n\n}\n",
+            "assetsDirs": [],
+            "styleUrlsData": "",
+            "stylesData": "",
+            "templateData": "<div class=\"sky-docs-demo-page-section\">\n  <stache-page-anchor>\n    {{ heading }}\n  </stache-page-anchor>\n\n  <div class=\"sky-docs-demo-page-section-body\">\n    <ng-content></ng-content>\n  </div>\n</div>"
+        },
+        {
+            "name": "SkyDocsDemoPageSummaryComponent",
+            "id": "component-SkyDocsDemoPageSummaryComponent-b101d81bd3e54dccd5c9158eeb644777",
+            "file": "src/app/public/modules/demo-page/demo-page-summary.component.ts",
+            "changeDetection": "ChangeDetectionStrategy.OnPush",
+            "encapsulation": [],
+            "entryComponents": [],
+            "inputs": [],
+            "outputs": [],
+            "providers": [],
+            "selector": "sky-docs-demo-page-summary",
+            "styleUrls": [],
+            "styles": [],
+            "templateUrl": [
+                "./demo-page-summary.component.html"
+            ],
+            "viewProviders": [],
+            "inputsClass": [],
+            "outputsClass": [],
+            "propertiesClass": [],
+            "methodsClass": [],
+            "hostBindings": [],
+            "hostListeners": [],
+            "description": "",
+            "rawdescription": "",
+            "type": "component",
+            "sourceCode": "import {\n  ChangeDetectionStrategy,\n  Component\n} from '@angular/core';\n\n@Component({\n  selector: 'sky-docs-demo-page-summary',\n  templateUrl: './demo-page-summary.component.html',\n  changeDetection: ChangeDetectionStrategy.OnPush\n})\nexport class SkyDocsDemoPageSummaryComponent { }\n",
+            "assetsDirs": [],
+            "styleUrlsData": "",
+            "stylesData": "",
+            "templateData": "<ng-content></ng-content>"
+        },
+        {
+            "name": "SkyDocsModuleInfoComponent",
+            "id": "component-SkyDocsModuleInfoComponent-f5509fc2b6bbc5852fff44ed1afaf78d",
+            "file": "src/app/public/modules/module-info/module-info.component.ts",
+            "changeDetection": "ChangeDetectionStrategy.OnPush",
+            "encapsulation": [],
+            "entryComponents": [],
+            "inputs": [],
+            "outputs": [],
+            "providers": [],
+            "selector": "sky-docs-demo-page-module-info",
+            "styleUrls": [],
+            "styles": [],
+            "templateUrl": [
+                "./module-info.component.html"
+            ],
+            "viewProviders": [],
+            "inputsClass": [
+                {
+                    "name": "gitRepoUrl",
+                    "line": 15,
+                    "type": "string"
+                },
+                {
+                    "name": "moduleName",
+                    "line": 18,
+                    "type": "string"
+                },
+                {
+                    "name": "packageName",
+                    "line": 21,
+                    "type": "string"
+                }
+            ],
+            "outputsClass": [],
+            "propertiesClass": [],
+            "methodsClass": [],
+            "hostBindings": [],
+            "hostListeners": [],
+            "description": "",
+            "rawdescription": "",
+            "type": "component",
+            "sourceCode": "import {\n  ChangeDetectionStrategy,\n  Component,\n  Input\n} from '@angular/core';\n\n@Component({\n  selector: 'sky-docs-demo-page-module-info',\n  templateUrl: './module-info.component.html',\n  changeDetection: ChangeDetectionStrategy.OnPush\n})\nexport class SkyDocsModuleInfoComponent {\n\n  @Input()\n  public gitRepoUrl: string;\n\n  @Input()\n  public moduleName: string;\n\n  @Input()\n  public packageName: string;\n\n  public get externalLinks(): { label: string; url: string; }[] {\n    const externalLinks: { label: string; url: string; }[] = [];\n\n    if (this.packageName) {\n      externalLinks.push({\n        url: this.packageUrl,\n        label: 'View in NPM'\n      });\n    }\n\n    if (this.gitRepoUrl) {\n      externalLinks.push({\n        url: this.gitRepoUrl,\n        label: 'View in GitHub'\n      });\n    }\n\n    return externalLinks;\n  }\n\n  public get installationCommand(): string {\n    if (!this.packageName) {\n      return '';\n    }\n\n    return `npm install --save-exact ${this.packageName}`;\n  }\n\n  public get packageUrl(): string {\n    if (!this.packageName) {\n      return '';\n    }\n\n    return `https://npmjs.org/packages/${this.packageName}`;\n  }\n}\n",
+            "assetsDirs": [],
+            "styleUrlsData": "",
+            "stylesData": "",
+            "accessors": {
+                "externalLinks": {
+                    "name": "externalLinks",
+                    "getSignature": {
+                        "name": "externalLinks",
+                        "type": "[]",
+                        "returnType": "literal type[]",
+                        "line": 23
+                    }
+                },
+                "installationCommand": {
+                    "name": "installationCommand",
+                    "getSignature": {
+                        "name": "installationCommand",
+                        "type": "string",
+                        "returnType": "string",
+                        "line": 43
+                    }
+                },
+                "packageUrl": {
+                    "name": "packageUrl",
+                    "getSignature": {
+                        "name": "packageUrl",
+                        "type": "string",
+                        "returnType": "string",
+                        "line": 51
+                    }
+                }
+            },
+            "templateData": "<div\n  class=\"sky-docs-demo-page-module-info\"\n>\n  <sky-definition-list\n    defaultValue=\"\"\n    labelWidth=\"200px\"\n  >\n    <sky-definition-list-content *ngIf=\"moduleName\">\n      <sky-definition-list-label>\n        Defined in module\n      </sky-definition-list-label>\n      <sky-definition-list-value>\n        {{ moduleName }}\n      </sky-definition-list-value>\n    </sky-definition-list-content>\n\n    <sky-definition-list-content *ngIf=\"packageName\">\n      <sky-definition-list-label>\n        In NPM package\n      </sky-definition-list-label>\n      <sky-definition-list-value>\n        {{ packageName }}\n\n        <ng-container *ngFor=\"let externalLink of externalLinks; let i = index;\">\n          <a [attr.href]=\"externalLink.url\">{{ externalLink.label }}</a>\n          <ng-container *ngIf=\"i < externalLinks.length - 1\">&nbsp;| </ng-container>\n        </ng-container>\n\n      </sky-definition-list-value>\n    </sky-definition-list-content>\n\n    <sky-definition-list-content *ngIf=\"installationCommand\">\n      <sky-definition-list-label>\n        Installation command\n      </sky-definition-list-label>\n      <sky-definition-list-value>\n        <span #copyTarget><sky-code>{{ installationCommand }}</sky-code></span>\n        <sky-copy-to-clipboard\n          buttonText=\"Copy\"\n          [copyTarget]=\"copyTarget\"\n        >\n        </sky-copy-to-clipboard>\n      </sky-definition-list-value>\n    </sky-definition-list-content>\n\n  </sky-definition-list>\n</div>\n"
+        },
+        {
+            "name": "SkyDocsPropertyDefinitionComponent",
+            "id": "component-SkyDocsPropertyDefinitionComponent-6187623c7c60b4e3eb5ca75edebeef6b",
+            "file": "src/app/public/modules/property-definitions/property-definition.component.ts",
+            "changeDetection": "ChangeDetectionStrategy.OnPush",
+            "encapsulation": [],
+            "entryComponents": [],
+            "inputs": [],
+            "outputs": [],
+            "providers": [],
+            "selector": "sky-docs-property-definition",
+            "styleUrls": [],
+            "styles": [],
+            "templateUrl": [
+                "./property-definition.component.html"
+            ],
+            "viewProviders": [],
+            "inputsClass": [
+                {
+                    "name": "dataType",
+                    "defaultValue": "'any'",
+                    "line": 17,
+                    "type": "string"
+                },
+                {
+                    "name": "defaultValue",
+                    "line": 20,
+                    "type": "string"
+                },
+                {
+                    "name": "description",
+                    "line": 23,
+                    "type": "string"
+                },
+                {
+                    "name": "isDeprecated",
+                    "defaultValue": "false",
+                    "line": 26,
+                    "type": "boolean"
+                },
+                {
+                    "name": "isRequired",
+                    "defaultValue": "false",
+                    "line": 29,
+                    "type": "boolean"
+                },
+                {
+                    "name": "propertyName",
+                    "line": 32,
+                    "type": "string"
+                }
+            ],
+            "outputsClass": [],
+            "propertiesClass": [
+                {
+                    "name": "templateRef",
+                    "type": "TemplateRef<any>",
+                    "optional": false,
+                    "description": "",
+                    "line": 35,
+                    "decorators": [
+                        {
+                            "name": "ViewChild",
+                            "stringifiedArguments": "'templateRef', {read: TemplateRef}"
+                        }
+                    ],
+                    "modifierKind": [
+                        114
+                    ]
+                }
+            ],
+            "methodsClass": [],
+            "hostBindings": [],
+            "hostListeners": [],
+            "description": "",
+            "rawdescription": "",
+            "type": "component",
+            "sourceCode": "import {\n  ChangeDetectionStrategy,\n  Component,\n  Input,\n  TemplateRef,\n  ViewChild\n} from '@angular/core';\n\n@Component({\n  selector: 'sky-docs-property-definition',\n  templateUrl: './property-definition.component.html',\n  changeDetection: ChangeDetectionStrategy.OnPush\n})\nexport class SkyDocsPropertyDefinitionComponent {\n\n  @Input()\n  public dataType: string = 'any';\n\n  @Input()\n  public defaultValue: string;\n\n  @Input()\n  public description: string;\n\n  @Input()\n  public isDeprecated: boolean = false;\n\n  @Input()\n  public isRequired: boolean = false;\n\n  @Input()\n  public propertyName: string;\n\n  @ViewChild('templateRef', { read: TemplateRef })\n  public templateRef: TemplateRef<any>;\n\n}\n",
+            "assetsDirs": [],
+            "styleUrlsData": "",
+            "stylesData": "",
+            "templateData": "<ng-template #templateRef>\n  <ng-content></ng-content>\n</ng-template>\n"
+        },
+        {
+            "name": "SkyDocsPropertyDefinitionsComponent",
+            "id": "component-SkyDocsPropertyDefinitionsComponent-55897a68ee6deb59b635f0ea16d03e1e",
+            "file": "src/app/public/modules/property-definitions/property-definitions.component.ts",
+            "changeDetection": "ChangeDetectionStrategy.OnPush",
+            "encapsulation": [],
+            "entryComponents": [],
+            "inputs": [],
+            "outputs": [],
+            "providers": [],
+            "selector": "sky-docs-property-definitions",
+            "styleUrls": [
+                "./property-definitions.component.scss"
+            ],
+            "styles": [],
+            "templateUrl": [
+                "./property-definitions.component.html"
+            ],
+            "viewProviders": [],
+            "inputsClass": [],
+            "outputsClass": [],
+            "propertiesClass": [
+                {
+                    "name": "data",
+                    "defaultValue": "[]",
+                    "type": "SkyPropertyDefinition[]",
+                    "optional": false,
+                    "description": "",
+                    "line": 26,
+                    "modifierKind": [
+                        114
+                    ]
+                }
+            ],
+            "methodsClass": [],
+            "hostBindings": [],
+            "hostListeners": [],
+            "description": "",
+            "rawdescription": "",
+            "type": "component",
+            "sourceCode": "import {\n  ChangeDetectionStrategy,\n  Component,\n  ContentChildren,\n  QueryList,\n  AfterContentInit,\n  ChangeDetectorRef\n} from '@angular/core';\n\nimport {\n  SkyDocsPropertyDefinitionComponent\n} from './property-definition.component';\n\nimport {\n  SkyPropertyDefinition\n} from './property-definition';\n\n@Component({\n  selector: 'sky-docs-property-definitions',\n  templateUrl: './property-definitions.component.html',\n  styleUrls: ['./property-definitions.component.scss'],\n  changeDetection: ChangeDetectionStrategy.OnPush\n})\nexport class SkyDocsPropertyDefinitionsComponent implements AfterContentInit {\n\n  public data: SkyPropertyDefinition[] = [];\n\n  @ContentChildren(SkyDocsPropertyDefinitionComponent)\n  private definitionRefs: QueryList<SkyDocsPropertyDefinitionComponent>;\n\n  constructor(\n    private changeDetector: ChangeDetectorRef\n  ) { }\n\n  public ngAfterContentInit(): void {\n    this.definitionRefs.forEach((definitionRef) => {\n      this.data.push({\n        dataType: definitionRef.dataType,\n        defaultValue: definitionRef.defaultValue,\n        description: definitionRef.description,\n        isDeprecated: definitionRef.isDeprecated,\n        isRequired: definitionRef.isRequired,\n        propertyName: definitionRef.propertyName,\n        templateRef: definitionRef.templateRef\n      });\n    });\n\n    this.changeDetector.markForCheck();\n  }\n\n}\n",
+            "assetsDirs": [],
+            "styleUrlsData": [
+                {
+                    "data": ".sky-docs-property-definitions {\n  ::ng-deep p {\n    margin: 0;\n  }\n}",
+                    "styleUrl": "./property-definitions.component.scss"
+                }
+            ],
+            "stylesData": "",
+            "constructorObj": {
+                "name": "constructor",
+                "description": "",
+                "args": [
+                    {
+                        "name": "changeDetector",
+                        "type": "ChangeDetectorRef"
+                    }
+                ],
+                "line": 29,
+                "jsdoctags": [
+                    {
+                        "name": "changeDetector",
+                        "type": "ChangeDetectorRef",
+                        "tagName": {
+                            "text": "param"
+                        }
+                    }
+                ]
+            },
+            "implements": [
+                "AfterContentInit"
+            ],
+            "templateData": "<!-- <div\n  class=\"sky-docs-property-definitions sky-table\"\n  role=\"table\"\n>\n  <div\n    class=\"sky-table-row\"\n    role=\"row\"\n  >\n    <div\n      class=\"sky-table-cell sky-table-column-header\"\n      role=\"columnheader\"\n    >\n      Name\n    </div>\n    <div\n      class=\"sky-table-cell sky-table-column-header\"\n      role=\"columnheader\"\n    >\n      Description\n    </div>\n    <div\n      class=\"sky-table-cell sky-table-column-header\"\n      role=\"columnheader\"\n    >\n      Default value\n    </div>\n  </div>\n\n  <div *ngFor=\"let item of data\"\n    class=\"sky-table-row\"\n    role=\"row\"\n  >\n    <div\n      class=\"sky-table-cell\"\n      role=\"cell\"\n    >\n      {{ item.propertyName }}\n      <div *ngIf=\"item.isRequired\"\n        class=\"sky-text-danger\"\n      >\n        Required\n      </div>\n    </div>\n\n    <div\n      class=\"sky-table-cell\"\n      role=\"cell\"\n    >\n      <ng-container [ngTemplateOutlet]=\"item.templateRef\"></ng-container>\n    </div>\n\n    <div\n      class=\"sky-table-cell\"\n      role=\"cell\"\n    >\n      {{ item.defaultValue }}\n    </div>\n\n  </div>\n</div> -->\n\n<div\n  class=\"sky-docs-property-definitions\"\n>\n  <table\n    class=\"sky-table\"\n  >\n    <tr\n      class=\"sky-table-row\"\n    >\n      <th\n        class=\"sky-table-cell sky-table-column-header\"\n      >\n        Property name\n      </th>\n      <th\n        class=\"sky-table-cell sky-table-column-header\"\n      >\n        Data type\n      </th>\n      <th\n        class=\"sky-table-cell sky-table-column-header\"\n      >\n        Description\n      </th>\n    </tr>\n    <tr *ngFor=\"let item of data\"\n      class=\"sky-table-row\"\n    >\n      <td\n        class=\"sky-table-cell\"\n      >\n        <sky-code>{{ item.propertyName }}</sky-code>\n        <div *ngIf=\"item.isRequired\"\n          class=\"sky-text-danger\"\n        >\n          Required\n        </div>\n\n        <div *ngIf=\"item.isDeprecated\"\n          class=\"sky-text-warning\"\n        >\n          Deprecated\n        </div>\n      </td>\n\n      <td\n        class=\"sky-table-cell\"\n      >\n        {{ item.dataType }}\n      </td>\n\n      <td\n        class=\"sky-table-cell\"\n      >\n        <ng-container *ngIf=\"item.description\">\n          <div [innerHTML]=\"item.description\"></div>\n        </ng-container>\n        <ng-container *ngIf=\"!item.description\"\n          [ngTemplateOutlet]=\"item.templateRef\"\n        >\n        </ng-container>\n        <div *ngIf=\"item.defaultValue !== undefined\">\n          Default: {{ item.defaultValue }}\n        </div>\n      </td>\n    </tr>\n  </table>\n</div>"
+        }
+    ],
+    "modules": [
+        {
+            "name": "SkyDocsBehaviorDemoModule",
+            "children": [
+                {
+                    "type": "providers",
+                    "elements": []
+                },
+                {
+                    "type": "declarations",
+                    "elements": [
+                        {
+                            "name": "SkyDocsBehaviorDemoComponent"
+                        },
+                        {
+                            "name": "SkyDocsBehaviorDemoControlsComponent"
+                        }
+                    ]
+                },
+                {
+                    "type": "imports",
+                    "elements": []
+                },
+                {
+                    "type": "exports",
+                    "elements": [
+                        {
+                            "name": "SkyDocsBehaviorDemoComponent"
+                        },
+                        {
+                            "name": "SkyDocsBehaviorDemoControlsComponent"
+                        }
+                    ]
+                },
+                {
+                    "type": "bootstrap",
+                    "elements": []
+                },
+                {
+                    "type": "classes",
+                    "elements": []
+                }
+            ]
+        },
+        {
+            "name": "SkyDocsCodeExamplesModule",
+            "children": [
+                {
+                    "type": "providers",
+                    "elements": [
+                        {
+                            "name": "SkyDocsCodeExamplesEditorService"
+                        }
+                    ]
+                },
+                {
+                    "type": "declarations",
+                    "elements": [
+                        {
+                            "name": "SkyDocsCodeExampleComponent"
+                        },
+                        {
+                            "name": "SkyDocsCodeExamplesComponent"
+                        }
+                    ]
+                },
+                {
+                    "type": "imports",
+                    "elements": [
+                        {
+                            "name": "SkyDocsToolsResourcesModule"
+                        }
+                    ]
+                },
+                {
+                    "type": "exports",
+                    "elements": [
+                        {
+                            "name": "SkyDocsCodeExampleComponent"
+                        },
+                        {
+                            "name": "SkyDocsCodeExamplesComponent"
+                        }
+                    ]
+                },
+                {
+                    "type": "bootstrap",
+                    "elements": []
+                },
+                {
+                    "type": "classes",
+                    "elements": []
+                }
+            ]
+        },
+        {
+            "name": "SkyDocsDemoPageModule",
+            "children": [
+                {
+                    "type": "providers",
+                    "elements": []
+                },
+                {
+                    "type": "declarations",
+                    "elements": [
+                        {
+                            "name": "SkyDocsDemoPageComponent"
+                        },
+                        {
+                            "name": "SkyDocsDemoPageSectionComponent"
+                        },
+                        {
+                            "name": "SkyDocsDemoPageSummaryComponent"
+                        }
+                    ]
+                },
+                {
+                    "type": "imports",
+                    "elements": [
+                        {
+                            "name": "SkyDocsBehaviorDemoModule"
+                        },
+                        {
+                            "name": "SkyDocsModuleInfoModule"
+                        },
+                        {
+                            "name": "SkyDocsPropertyDefinitionsModule"
+                        }
+                    ]
+                },
+                {
+                    "type": "exports",
+                    "elements": [
+                        {
+                            "name": "SkyDocsCodeExamplesModule"
+                        },
+                        {
+                            "name": "SkyDocsDemoPageComponent"
+                        },
+                        {
+                            "name": "SkyDocsDemoPageSectionComponent"
+                        },
+                        {
+                            "name": "SkyDocsDemoPageSummaryComponent"
+                        },
+                        {
+                            "name": "SkyDocsPropertyDefinitionsModule"
+                        }
+                    ]
+                },
+                {
+                    "type": "bootstrap",
+                    "elements": []
+                },
+                {
+                    "type": "classes",
+                    "elements": []
+                }
+            ]
+        },
+        {
+            "name": "SkyDocsModuleInfoModule",
+            "children": [
+                {
+                    "type": "providers",
+                    "elements": []
+                },
+                {
+                    "type": "declarations",
+                    "elements": [
+                        {
+                            "name": "SkyDocsModuleInfoComponent"
+                        }
+                    ]
+                },
+                {
+                    "type": "imports",
+                    "elements": []
+                },
+                {
+                    "type": "exports",
+                    "elements": [
+                        {
+                            "name": "SkyDocsModuleInfoComponent"
+                        }
+                    ]
+                },
+                {
+                    "type": "bootstrap",
+                    "elements": []
+                },
+                {
+                    "type": "classes",
+                    "elements": []
+                }
+            ]
+        },
+        {
+            "name": "SkyDocsPropertyDefinitionsModule",
+            "children": [
+                {
+                    "type": "providers",
+                    "elements": []
+                },
+                {
+                    "type": "declarations",
+                    "elements": [
+                        {
+                            "name": "SkyDocsPropertyDefinitionComponent"
+                        },
+                        {
+                            "name": "SkyDocsPropertyDefinitionsComponent"
+                        }
+                    ]
+                },
+                {
+                    "type": "imports",
+                    "elements": []
+                },
+                {
+                    "type": "exports",
+                    "elements": [
+                        {
+                            "name": "SkyDocsPropertyDefinitionComponent"
+                        },
+                        {
+                            "name": "SkyDocsPropertyDefinitionsComponent"
+                        }
+                    ]
+                },
+                {
+                    "type": "bootstrap",
+                    "elements": []
+                },
+                {
+                    "type": "classes",
+                    "elements": []
+                }
+            ]
+        },
+        {
+            "name": "SkyDocsToolsResourcesModule",
+            "children": [
+                {
+                    "type": "providers",
+                    "elements": []
+                },
+                {
+                    "type": "declarations",
+                    "elements": []
+                },
+                {
+                    "type": "imports",
+                    "elements": []
+                },
+                {
+                    "type": "exports",
+                    "elements": []
+                },
+                {
+                    "type": "bootstrap",
+                    "elements": []
+                },
+                {
+                    "type": "classes",
+                    "elements": []
+                }
+            ]
+        }
+    ],
+    "miscellaneous": {
+        "variables": [
+            {
+                "name": "documentationData",
+                "ctype": "miscellaneous",
+                "subtype": "variable",
+                "file": "src/app/public/modules/demo-page/demo-page.component.ts",
+                "type": "any",
+                "defaultValue": "require('../../../../../documentation/documentation.json')"
+            }
+        ],
+        "functions": [],
+        "typealiases": [
+            {
+                "name": "SkyDocsCodeExampleModuleDependencies",
+                "ctype": "miscellaneous",
+                "subtype": "typealias",
+                "rawtype": "literal type",
+                "file": "src/app/public/modules/code-examples/code-example-module-dependencies.ts",
+                "description": "",
+                "kind": 165
+            }
+        ],
+        "enumerations": [],
+        "groupedVariables": {
+            "src/app/public/modules/demo-page/demo-page.component.ts": [
+                {
+                    "name": "documentationData",
+                    "ctype": "miscellaneous",
+                    "subtype": "variable",
+                    "file": "src/app/public/modules/demo-page/demo-page.component.ts",
+                    "type": "any",
+                    "defaultValue": "require('../../../../../documentation/documentation.json')"
+                }
+            ]
+        },
+        "groupedFunctions": {},
+        "groupedEnumerations": {},
+        "groupedTypeAliases": {
+            "src/app/public/modules/code-examples/code-example-module-dependencies.ts": [
+                {
+                    "name": "SkyDocsCodeExampleModuleDependencies",
+                    "ctype": "miscellaneous",
+                    "subtype": "typealias",
+                    "rawtype": "literal type",
+                    "file": "src/app/public/modules/code-examples/code-example-module-dependencies.ts",
+                    "description": "",
+                    "kind": 165
+                }
+            ]
+        }
+    },
+    "routes": [],
+    "coverage": {
+        "count": 5,
+        "status": "low",
+        "files": [
+            {
+                "filePath": "src/app/public/modules/behavior-demo/behavior-demo-controls.component.ts",
+                "type": "component",
+                "linktype": "component",
+                "name": "SkyDocsBehaviorDemoControlsComponent",
+                "coveragePercent": 0,
+                "coverageCount": "0/1",
+                "status": "low"
+            },
+            {
+                "filePath": "src/app/public/modules/behavior-demo/behavior-demo.component.ts",
+                "type": "component",
+                "linktype": "component",
+                "name": "SkyDocsBehaviorDemoComponent",
+                "coveragePercent": 0,
+                "coverageCount": "0/1",
+                "status": "low"
+            },
+            {
+                "filePath": "src/app/public/modules/code-examples/code-example.component.ts",
+                "type": "component",
+                "linktype": "component",
+                "name": "SkyDocsCodeExampleComponent",
+                "coveragePercent": 0,
+                "coverageCount": "0/3",
+                "status": "low"
+            },
+            {
+                "filePath": "src/app/public/modules/code-examples/code-example.ts",
+                "type": "interface",
+                "linktype": "interface",
+                "name": "SkyDocsCodeExample",
+                "coveragePercent": 0,
+                "coverageCount": "0/4",
+                "status": "low"
+            },
+            {
+                "filePath": "src/app/public/modules/code-examples/code-examples-editor.service.ts",
+                "type": "injectable",
+                "linktype": "injectable",
+                "name": "SkyDocsCodeExamplesEditorService",
+                "coveragePercent": 0,
+                "coverageCount": "0/2",
+                "status": "low"
+            },
+            {
+                "filePath": "src/app/public/modules/code-examples/code-examples.component.ts",
+                "type": "component",
+                "linktype": "component",
+                "name": "SkyDocsCodeExamplesComponent",
+                "coveragePercent": 16,
+                "coverageCount": "1/6",
+                "status": "low"
+            },
+            {
+                "filePath": "src/app/public/modules/demo-page/demo-page-section.component.ts",
+                "type": "component",
+                "linktype": "component",
+                "name": "SkyDocsDemoPageSectionComponent",
+                "coveragePercent": 0,
+                "coverageCount": "0/2",
+                "status": "low"
+            },
+            {
+                "filePath": "src/app/public/modules/demo-page/demo-page-summary.component.ts",
+                "type": "component",
+                "linktype": "component",
+                "name": "SkyDocsDemoPageSummaryComponent",
+                "coveragePercent": 0,
+                "coverageCount": "0/1",
+                "status": "low"
+            },
+            {
+                "filePath": "src/app/public/modules/demo-page/demo-page.component.ts",
+                "type": "component",
+                "linktype": "component",
+                "name": "SkyDocsDemoPageComponent",
+                "coveragePercent": 71,
+                "coverageCount": "5/7",
+                "status": "good"
+            },
+            {
+                "filePath": "src/app/public/modules/demo-page/demo-page.component.ts",
+                "type": "variable",
+                "linktype": "miscellaneous",
+                "linksubtype": "variable",
+                "name": "documentationData",
+                "coveragePercent": 0,
+                "coverageCount": "0/1",
+                "status": "low"
+            },
+            {
+                "filePath": "src/app/public/modules/module-info/module-info.component.ts",
+                "type": "component",
+                "linktype": "component",
+                "name": "SkyDocsModuleInfoComponent",
+                "coveragePercent": 0,
+                "coverageCount": "0/4",
+                "status": "low"
+            },
+            {
+                "filePath": "src/app/public/modules/property-definitions/property-definition.component.ts",
+                "type": "component",
+                "linktype": "component",
+                "name": "SkyDocsPropertyDefinitionComponent",
+                "coveragePercent": 0,
+                "coverageCount": "0/8",
+                "status": "low"
+            },
+            {
+                "filePath": "src/app/public/modules/property-definitions/property-definition.ts",
+                "type": "interface",
+                "linktype": "interface",
+                "name": "SkyPropertyDefinition",
+                "coveragePercent": 0,
+                "coverageCount": "0/8",
+                "status": "low"
+            },
+            {
+                "filePath": "src/app/public/modules/property-definitions/property-definitions.component.ts",
+                "type": "component",
+                "linktype": "component",
+                "name": "SkyDocsPropertyDefinitionsComponent",
+                "coveragePercent": 0,
+                "coverageCount": "0/3",
+                "status": "low"
+            },
+            {
+                "filePath": "src/app/public/modules/source-code/source-code-file.ts",
+                "type": "interface",
+                "linktype": "interface",
+                "name": "SkyDocsSourceCodeFile",
+                "coveragePercent": 0,
+                "coverageCount": "0/4",
+                "status": "low"
+            },
+            {
+                "filePath": "src/app/public/modules/source-code/source-code-provider.ts",
+                "type": "injectable",
+                "linktype": "injectable",
+                "name": "SkyDocsSourceCodeProvider",
+                "coveragePercent": 0,
+                "coverageCount": "0/2",
+                "status": "low"
+            }
+        ]
+    }
+}

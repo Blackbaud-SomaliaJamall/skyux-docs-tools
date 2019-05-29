@@ -29,6 +29,22 @@
       </sky-docs-demo-page-module-info>
     </sky-docs-demo-page-section>
 
+    <sky-docs-demo-page-section *ngFor="let definition of propertyDefinitions"
+      [heading]="definition.title"
+    >
+      <sky-docs-property-definitions *ngFor="let property of definition.propertyDefinitions">
+        <sky-docs-property-definition
+          [propertyName]="property.propertyName"
+          [dataType]="property.dataType"
+          [defaultValue]="property.defaultValue"
+          [description]="property.description"
+          [isDeprecated]="property.isDeprecated"
+          [isRequired]="property.isRequired"
+        >
+        </sky-docs-property-definition>
+      </sky-docs-property-definitions>
+    </sky-docs-demo-page-section>
+
     <ng-content></ng-content>
 
     <sky-docs-demo-page-section
